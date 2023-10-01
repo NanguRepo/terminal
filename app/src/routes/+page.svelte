@@ -16,17 +16,17 @@
 
 <div class="w-full h-screen flex flex-col justify-center items-center bg-black">
 	<div
-		class="flex flex-col-reverse overflow-scroll w-3/4 h-2/3 p-4 rounded-2xl bg-neutral-900 font-mono"
-		style="font-size: {$config.fontsize}; color: {$config.textcolor}"
+		class="flex flex-col-reverse overflow-scroll w-3/4 h-2/3 p-4 rounded-2xl font-mono"
+		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}"
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
 			<span>$</span>
 			<form class="w-full h-full p-0">
 				<textarea
 					bind:value={command}
-					class="bg-neutral-900 font-mono p-0 w-full h-full"
+					class="font-mono p-0 w-full h-full"
 					wrap="soft"
-					style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}"
+					style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}"
 					spellcheck="false"
 					autofocus
 					on:keydown={(e) => {
