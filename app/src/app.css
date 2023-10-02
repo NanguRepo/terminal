@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: c64;
+  src: url(C64_Pro_Mono-STYLE.woff);
+}

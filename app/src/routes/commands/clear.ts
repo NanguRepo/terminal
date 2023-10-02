@@ -1,7 +1,7 @@
-import { terminalLines } from "../components/stores";
+import { terminalLines } from '../components/stores';
 
-export default (input: string[]) => {
-    terminalLines.set([])
-    return "";
-}
-export const description = "clears the terminal."
+export default () => {
+	terminalLines.set([]);
+	return '';
+};
+export const description = 'clears the terminal.';

@@ -10,20 +10,23 @@ export const print = (text: string) => {
 };
 
 // use vite glob import to get every command within the folder
-const modules = import.meta.glob('../commands/*.ts', {eager: true});
+const modules = import.meta.glob('../commands/**/*.ts', {eager: true});
 export const controller = (input: string[]) => {
     if (input[0] == '') {
         return ''
     }
-    if (`../commands/${input[0]}.ts` in modules) {
-        return modules[`../commands/${input[0]}.ts`]?.default(input.slice(1))
+    const commandName: string = input[0].toLowerCase().replace('a/', 'aliases/')
+    if (`../commands/${commandName}.ts` in modules) {
+        return modules[`../commands/${commandName}.ts`]?.default(input.slice(1))
     }
-    return `Command ${input[0]} does not exist.`
+    return 'command not found: ' + input[0];
 }
 export const generateHelpText = () => {
     let helpText: string = ""
     for (const path in modules) {
-        helpText += `${path.replace('../commands/', '').replace('.ts', '')}: ${modules[path].description}\n`
+        if (!path.includes("aliases/")) {
+            helpText += `${path.replace('../commands/', '').replace('.ts', '')}: ${modules[path].description}\n`
+        }
     }
     return helpText;
 }

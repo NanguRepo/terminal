@@ -1,32 +1,44 @@
 <script lang="ts">
-	import { log, terminalLines, config } from './components/stores';
+	import { log, terminalLines, config, cwd } from './components/stores';
 	import { print, controller, logCommand } from './components/functions';
 	let command: string = '';
-	let logIndex = 0;
+	let logIndex = -1;
+    print($cwd)
 	const enterCommand = () => {
 		logCommand(command);
-		print('$ ' + command);
+        logIndex = -1;
+		$config.prompt == ' '
+			? command == ''
+				? print('\n')
+				: print(command)
+			: print($config.prompt + ' ' + command);
 		if (command != '') {
 			print(controller(command.split(' ')));
 			print('\n');
 		}
+        print($cwd)
 		command = '';
 	};
 </script>
 
-<div class="w-full h-screen flex flex-col justify-center items-center bg-black">
+<div
+	class="w-full h-screen flex flex-col justify-center items-center"
+	style="background-color: {$config.containercolor}"
+>
 	<div
 		class="flex flex-col-reverse overflow-scroll w-3/4 h-2/3 p-4 rounded-2xl font-mono"
-		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}"
+		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
-			<span>$</span>
+			{#if $config.prompt != ' '}
+				<span>{$config.prompt}</span>
+			{/if}
 			<form class="w-full h-full p-0">
 				<textarea
 					bind:value={command}
-					class="font-mono p-0 w-full h-full"
+					class="p-0 w-full h-full"
 					wrap="soft"
-					style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}"
+					style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 					spellcheck="false"
 					autofocus
 					on:keydown={(e) => {
@@ -35,19 +47,25 @@
 							enterCommand();
 						}
 						if (e.key == 'ArrowUp') {
+                            e.preventDefault()
 							logIndex++;
-							command = $log.slice(-logIndex)[0];
+                            command = $log.toReversed()[logIndex];
 						}
-						if (e.key == 'ArrowDown' && logIndex > 0) {
-							logIndex--;
-							command = $log.slice(-logIndex)[0];
+						if (e.key == 'ArrowDown') {
+                            e.preventDefault()
+                            if (logIndex > -1) {
+                                logIndex--;
+                                command = $log.toReversed()[logIndex];
+                            } else if (logIndex == -1) {
+                                command = ''
+                            }
 						}
 					}}
 				/>
 			</form>
 		</div>
-		{#each $terminalLines as line, i}
-			<p class="font-mono whitespace-pre">{line}</p>
+		{#each $terminalLines as line}
+			<p class="whitespace-pre">{line}</p>
 		{/each}
 	</div>
 </div>
