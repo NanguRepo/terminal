@@ -7,7 +7,6 @@ export const createFile = (path: string, contents: string) => {
 	fileSystem.set(
 		deepMerge(get(fileSystem), createNestedObject(folders.length, file, contents, folders))
 	);
-	console.log(get(fileSystem));
 };
 
 type fileSystemFolder = {
