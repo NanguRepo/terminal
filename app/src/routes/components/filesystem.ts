@@ -41,6 +41,6 @@ const deepMerge = (target: fileSystemFolder, source: fileSystemFolder) => {
 	return target;
 };
 
-function isObject(item: string|fileSystemFolder) {
+export const isObject = (item: string|fileSystemFolder) => {
 	return item && typeof item === 'object' && !Array.isArray(item);
 }

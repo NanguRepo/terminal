@@ -3,20 +3,15 @@
 	import { print, controller, logCommand } from './components/functions';
 	let command: string = '';
 	let logIndex = -1;
-    print($cwd)
 	const enterCommand = () => {
 		logCommand(command);
-        logIndex = -1;
-		$config.prompt == ' '
-			? command == ''
-				? print('\n')
-				: print(command)
-			: print($config.prompt + ' ' + command);
+		logIndex = -1;
+		$config.prompt == ' ' ? print(command) : print($config.prompt + ' ' + command);
 		if (command != '') {
 			print(controller(command.split(' ')));
-			print('\n');
 		}
-        print($cwd)
+        print('\n');
+		print($cwd);
 		command = '';
 	};
 </script>
@@ -47,18 +42,18 @@
 							enterCommand();
 						}
 						if (e.key == 'ArrowUp') {
-                            e.preventDefault()
+							e.preventDefault();
 							logIndex++;
-                            command = $log.toReversed()[logIndex];
+							command = $log.toReversed()[logIndex];
 						}
 						if (e.key == 'ArrowDown') {
-                            e.preventDefault()
-                            if (logIndex > -1) {
-                                logIndex--;
-                                command = $log.toReversed()[logIndex];
-                            } else if (logIndex == -1) {
-                                command = ''
-                            }
+							e.preventDefault();
+							if (logIndex > -1) {
+								logIndex--;
+								command = $log.toReversed()[logIndex];
+							} else if (logIndex == -1) {
+								command = '';
+							}
 						}
 					}}
 				/>

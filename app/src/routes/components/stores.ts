@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
 import type { Writable } from 'svelte/store';
 
-type fileSystemFolder = {
+export type fileSystemFolder = {
 	[Key: string]: string | fileSystemFolder;
 };
 
