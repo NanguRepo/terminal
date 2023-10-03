@@ -27,7 +27,10 @@ function ls(currentDirectory: string, filesystem: fileSystemFolder) {
 		const contents = Object.keys(currentObject);
         let returnMessage: string = "";
 		for (const item of contents) {
-			returnMessage += item+"\t";
+            if (isObject(currentObject[item])) {
+                returnMessage += item + "/\t"
+            }
+			returnMessage += item + "\t";
 		}
         return returnMessage
 	} else {

@@ -25,7 +25,8 @@ export const generateHelpText = () => {
     let helpText: string = ""
     for (const path in modules) {
         if (!path.includes("aliases/")) {
-            helpText += `${path.replace('../commands/', '').replace('.ts', '')}: ${modules[path].description}\n`
+            let spacer = " ".repeat(60-path.length)
+            helpText += path.replace('../commands/', '').replace('.ts', '') + spacer + modules[path].description + "\n"
         }
     }
     return helpText;
