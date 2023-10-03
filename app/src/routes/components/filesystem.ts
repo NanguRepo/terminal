@@ -9,6 +9,38 @@ export const createFile = (path: string, contents: string) => {
 	);
 };
 
+export const fileExists = (filePath: string) => {
+    const pathElements = filePath.split('/').filter(element => element !== ''); // Split and remove empty elements
+    let currentObject = get(fileSystem);
+
+    // Traverse the filesystem based on the path in filePath
+    for (const element of pathElements) {
+        currentObject = currentObject[element];
+        if (!currentObject) {
+            return false; // Directory or file not found
+        }
+    }
+
+    // Check if the final element in the path exists and is not an object (indicating a file)
+    return currentObject !== undefined && !isObject(currentObject);
+}
+
+export const readFile = (filePath: string): string|null => {
+    if (!fileExists(filePath)) { return null }
+    const pathElements = filePath.split('/').filter(element => element !== ''); // Split and remove empty elements
+    let currentObject = get(fileSystem);
+
+    for (const element of pathElements) {
+        currentObject = currentObject[element]
+    }
+    // Check if the final element in the path exists and is not an object (indicating a file)
+    if (currentObject !== undefined && !isObject(currentObject)) {
+        return currentObject.toString();
+    } else {
+        return null; // File not found
+    }
+}
+
 type fileSystemFolder = {
 	[Key: string]: string | fileSystemFolder;
 };

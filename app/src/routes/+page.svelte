@@ -21,7 +21,7 @@
 	style="background-color: {$config.containercolor}"
 >
 	<div
-		class="flex flex-col-reverse overflow-y-scroll break-normal w-3/4 h-2/3 p-4 rounded-2xl font-mono"
+		class="flex flex-col-reverse overflow-y-scroll overflow-x-hidden w-3/4 h-2/3 p-4 rounded-2xl font-mono"
 		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
@@ -60,7 +60,7 @@
 			</form>
 		</div>
 		{#each $terminalLines as line}
-			<p class="whitespace-pre">{line}</p>
+			<p class="whitespace-pre-wrap">{line}</p>
 		{/each}
 	</div>
 </div>
