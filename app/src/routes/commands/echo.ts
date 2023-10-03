@@ -1,8 +1,8 @@
 export default (input: string[]) => {
     let style: string = ''
-    if ("(CSS)" in input) {
-        return [{text: 'CSS detected', style: ''}]
+    if (input.includes("(CSS)")) {
         style = input.join(" ").split("(CSS)")[1]
+        input = input.join(" ").split("(CSS)")[0].split(" ")
     }
     return [{text: input.join(" "), style: style}];
 }

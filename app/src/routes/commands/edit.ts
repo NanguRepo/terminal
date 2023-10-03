@@ -17,7 +17,7 @@ export default (input: string[]) => {
         content = promptResult
     }
     createFile(path, content)
-    return `file created: ${input[0]}\nwith content: ${content}`;
+    return [{text: `file created: ${input[0]}\nwith content: ${content}`, style: ''}];
 }
 
 export const description = "edit the contents of a file or create a new file with content."

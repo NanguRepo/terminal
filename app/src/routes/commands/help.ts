@@ -9,8 +9,8 @@ export default () => {
 	for (const path in modules) {
 		if (!path.includes('aliases/')) {
 			helpText.push({
-				text: path.replace('../commands/', '').replace('.ts', ''),
-				style: 'font-weight: bold; text-decoration-line: underline; text-underline-offset: 0.5ch'
+				text: "\n" + path.replace('../commands/', '').replace('.ts', ''),
+				style: 'font-weight: bold; font-style: italic; text-decoration-line: underline; text-underline-offset: 0.5ch; text-decoration-thickness: 1px;'
 			});
 			helpText.push({
 				text: ' '.repeat(longest.length - path.length - 10),
@@ -18,8 +18,8 @@ export default () => {
 					'text-decoration-line: underline; text-underline-offset: 0.5ch; border-right-width: 1px;'
 			});
 			helpText.push({
-				text: ' ' + modules[path].description + '\n',
-				style: 'color: cyan; text-decoration-line: underline; text-underline-offset: 0.5ch'
+				text: ' ' + modules[path].description,
+				style: 'color: cyan; text-decoration-line: underline; text-underline-offset: 0.5ch;'
 			});
 		}
 	}

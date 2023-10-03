@@ -20,7 +20,8 @@ export const configDefaults: Record<string, string> = {
 	backgroundcolor: '#171717',
 	containercolor: '#000000',
 	customcss: '',
-	prompt: '$'
+	prompt: '$',
+	promptstyle: ''
 };
 export const config = writable(configDefaults);
 export const fileSystem: Writable<fileSystemFolder> = writable({ '~': {} });

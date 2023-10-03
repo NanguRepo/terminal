@@ -8,7 +8,7 @@ export default (input: string[]) => {
     if (input[0]) {
         directory += `/${input[0]}`
     }
-    return ls(directory, get(fileSystem))
+    return [{text: ls(directory, get(fileSystem)), style: ''}]
 }
 
 function ls(currentDirectory: string, filesystem: fileSystemFolder) {
@@ -29,8 +29,9 @@ function ls(currentDirectory: string, filesystem: fileSystemFolder) {
 		for (const item of contents) {
             if (isObject(currentObject[item])) {
                 returnMessage += item + "/\t"
-            }
-			returnMessage += item + "\t";
+            } else {
+				returnMessage += item + "\t";
+			}
 		}
         return returnMessage
 	} else {

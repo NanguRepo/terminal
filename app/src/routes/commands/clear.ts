@@ -2,6 +2,6 @@ import { terminalLines } from '../components/stores';
 
 export default () => {
 	terminalLines.set([]);
-	return '';
+	return [{text: '', style: 'display: none;'}];
 };
 export const description = 'clears the terminal';

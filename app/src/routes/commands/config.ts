@@ -25,19 +25,19 @@ const setAll = (value: string) => {
 
 export default (input: string[]) => {
 	if (isErroneous(input)) {
-		return 'Usage: config <option> <value>\n\n' + JSON.stringify(get(config), null, '\t') + '\n';
+		return [{text: 'Usage: config <option> <value>\n\n' + JSON.stringify(get(config), null, '\t') + '\n', style: ''}];
 	}
 	if (!input[1]) {
-		return get(config)[input[0]];
+		return [{text: get(config)[input[0]], style: ''}];
 	}
     input[1] = input.slice(1).join(" ")
 	if (input[1] == 'reset') {
-		return reset(input);
+		return [{text: reset(input), style: ''}];
 	}
 	if (input[0] == '*') {
-        return setAll(input[1])
+        return [{text: setAll(input[1]), style: ''}]
 	}
 	config.set({ ...get(config), [input[0]]: input[1] });
-	return `Set ${input[0]} to ${input[1]}`;
+	return [{text: `Set ${input[0]} to ${input[1]}`, style: ''}];
 };
 export const description = 'configure the terminal.';

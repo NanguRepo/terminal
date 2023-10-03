@@ -16,15 +16,14 @@
 			print(controller(command.split(' ')));
 		}
 		print([
-			{ text: '\n', style: '' },
-			{ text: $cwd, style: '' }
+			{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }
 		]);
 		command = '';
 	};
 </script>
 
 <svelte:head>
-	<link href="https://fonts.googleapis.com/css?family=Fira Code" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css?family=Fira%20Code" rel="stylesheet" />
 	<style></style>
 </svelte:head>
 
@@ -38,7 +37,7 @@
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
 			{#if $config.prompt != ' '}
-				<span>{$config.prompt}</span>
+				<span style={$config.promptstyle}>{$config.prompt}</span>
 			{/if}
 			<form class="w-full h-full p-0">
 				<textarea
@@ -72,11 +71,11 @@
 			</form>
 		</div>
 		{#each $terminalLines as parts}
-        <p class="whitespace-pre-wrap">
-			{#each parts as line}
-				<span style={line.style}>{line.text}</span>
-			{/each}
-        </p>
+			<p class="whitespace-pre-wrap">
+				{#each parts as line}
+					<span style={line.style}>{line.text}</span>
+				{/each}
+			</p>
 		{/each}
 	</div>
 </div>
