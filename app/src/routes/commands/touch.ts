@@ -7,4 +7,4 @@ export default (input: string[]) => {
     return `file created: ${input[0]}`
 }
 
-export const description = "Create a file in a location."
+export const description = "create a file in a location."

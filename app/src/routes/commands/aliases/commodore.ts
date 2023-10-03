@@ -4,6 +4,7 @@ export default () => {
 	config(['backgroundcolor', '#483AAA']);
 	config(['containercolor', '#867ADE']);
 	config(['textcolor', '#867ADE']);
+	config(['fontsize', '14px'])
 	config([
 		'customcss',
 		'font-family: c64; text-transform: uppercase; border-radius: 0px;'

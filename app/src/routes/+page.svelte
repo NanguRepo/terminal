@@ -6,15 +6,27 @@
 	const enterCommand = () => {
 		logCommand(command);
 		logIndex = -1;
-		$config.prompt == ' ' ? print(command) : print($config.prompt + ' ' + command);
+		print([
+			{
+				text: $config.prompt == ' ' ? command : $config.prompt + ' ' + command,
+				style: ''
+			}
+		]);
 		if (command != '') {
 			print(controller(command.split(' ')));
 		}
-        print('\n');
-		print($cwd);
+		print([
+			{ text: '\n', style: '' },
+			{ text: $cwd, style: '' }
+		]);
 		command = '';
 	};
 </script>
+
+<svelte:head>
+	<link href="https://fonts.googleapis.com/css?family=Fira Code" rel="stylesheet" />
+	<style></style>
+</svelte:head>
 
 <div
 	class="w-full h-screen flex flex-col justify-center items-center"
@@ -59,8 +71,12 @@
 				/>
 			</form>
 		</div>
-		{#each $terminalLines as line}
-			<p class="whitespace-pre-wrap">{line}</p>
+		{#each $terminalLines as parts}
+        <p class="whitespace-pre-wrap">
+			{#each parts as line}
+				<span style={line.style}>{line.text}</span>
+			{/each}
+        </p>
 		{/each}
 	</div>
 </div>

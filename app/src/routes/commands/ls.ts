@@ -38,4 +38,4 @@ function ls(currentDirectory: string, filesystem: fileSystemFolder) {
 	}
 }
 
-export const description = "Get the contents of a directory, defaults to cwd"
+export const description = "get the contents of a directory, defaults to cwd."
