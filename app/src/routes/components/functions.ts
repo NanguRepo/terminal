@@ -10,6 +10,11 @@ export type terminalLine = {
     style: string
 }[]
 
+export type terminalError = {
+	message: string,
+	detail?: string
+}
+
 export const print = (input: terminalLine) => {
 	terminalLines.set([input, ...get(terminalLines)]);
 };
@@ -22,7 +27,25 @@ export const controller = (input: string[]) => {
 	}
 	const commandName: string = input[0].toLowerCase().replace('a/', 'aliases/');
 	if (`../commands/${commandName}.ts` in modules) {
-		return modules[`../commands/${commandName}.ts`]?.default(input.slice(1));
+		try {
+			return modules[`../commands/${commandName}.ts`]?.default(input.slice(1));
+		} catch(error: terminalError) {
+			return errorMessage(error.message, error.detail)
+		}
 	}
-	return ['command not found: ' + input[0], 'color: red'];
+	return errorMessage("command not found: ", input[0]);
 };
+
+const errorMessage = (message: string, detail?: string) => {
+	return [
+        {
+            text: 'Error: ',
+            style: 'color: red; font-weight: bold'
+        }, {
+            text: message,
+            style: 'color: pink;'
+        }, {
+            text: detail
+        }
+    ]
+}

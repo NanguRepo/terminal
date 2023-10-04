@@ -3,5 +3,15 @@ import { get } from "svelte/store";
 import { cwd } from "../components/stores";
 
 export default (input: string[]) => {
-    return [{text: readFile(get(cwd) + "/" + input[0]), style: ''}]
+    const path = get(cwd) + "/" + input[0]
+    const fileContent = readFile(path)
+    if (fileContent !== null) {
+        return [
+            {
+                text: fileContent,
+                style: ''
+            }
+        ]
+    }
+    return 
 }
