@@ -1,6 +1,6 @@
 import { fileSystem, cwd } from '../components/stores';
 import type { fileSystemFolder } from '../components/stores';
-import { isObject } from '../components/filesystem';
+import { isObject, resolvePath } from '../components/filesystem';
 import { get } from 'svelte/store';
 import { errorMessage } from '../components/functions';
 
@@ -9,7 +9,7 @@ export default (input: string[]) => {
 	if (input[0]) {
 		directory += `/${input[0]}`;
 	}
-	const response = ls(directory, get(fileSystem));
+	const response = ls(resolvePath(directory), get(fileSystem));
 	if (typeof response == 'string') {
 		return [{ text: response }]
 	} else {

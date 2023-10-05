@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
+    print([{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }]);
 	onMount(() => {
 		commandInput.focus();
 	});
@@ -40,7 +41,7 @@
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
 			{#if $config.prompt != ' '}
-				<span style={$config.promptstyle}>{$config.prompt}</span>
+				<span class="h-fit" style={$config.promptstyle}>{$config.prompt}</span>
 			{/if}
 			<form class="w-full h-full p-0">
 				<textarea

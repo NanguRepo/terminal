@@ -20,9 +20,15 @@ export const configDefaults: Record<string, string> = {
 	backgroundcolor: '#171717',
 	containercolor: '#000000',
 	customcss: '',
-	prompt: '$',
-	promptstyle: ''
+	prompt: '>',
+	promptstyle: 'font-weight: 900; text-decoration: underline;'
 };
 export const config = writable(configDefaults);
-export const fileSystem: Writable<fileSystemFolder> = writable({ '~': {} });
-export const cwd = writable('~');
+export const fileSystem: Writable<fileSystemFolder> = writable(
+	{
+		'root': {
+			'~': {} 
+		} 
+	}
+);
+export const cwd = writable('root/~');

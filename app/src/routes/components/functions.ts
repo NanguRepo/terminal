@@ -38,7 +38,7 @@ export const errorMessage = (message: string, detail?: string) => {
 			style: 'color: #FFAAAA;'
 		},
 		{
-			text: detail
+			text: detail || ''
 		}
 	];
 };
