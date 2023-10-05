@@ -10,16 +10,17 @@ export default () => {
 		if (!path.includes('aliases/')) {
 			helpText.push({
 				text: "\n" + path.replace('../commands/', '').replace('.ts', ''),
-				style: 'font-weight: bold; font-style: italic; text-decoration-line: underline; text-underline-offset: 0.5ch; text-decoration-thickness: 1px;'
+				style: 'font-weight: bold; font-style: italic; text-decoration-line: underline; text-decoration-thickness: 2px;'
 			});
 			helpText.push({
 				text: ' '.repeat(longest.length - path.length - 10),
 				style:
-					'text-decoration-line: underline; text-underline-offset: 0.5ch; border-right-width: 1px;'
+					'text-decoration-line: underline; border-right-width: 1px; text-decoration-thickness: 2px;'
 			});
 			helpText.push({
 				text: ' ' + modules[path].description,
-				style: 'color: cyan; text-decoration-line: underline; text-underline-offset: 0.5ch;'
+				style:
+					'color: cyan; text-decoration-line: underline; text-decoration-thickness: 2px;'
 			});
 		}
 	}

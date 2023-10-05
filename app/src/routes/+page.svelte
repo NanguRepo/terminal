@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { log, terminalLines, config, cwd } from './components/stores';
 	import { print, controller, logCommand } from './components/functions';
+	import { onMount } from 'svelte';
 	let command: string = '';
+	let commandInput: HTMLTextAreaElement;
+	onMount(() => {
+		commandInput.focus();
+	});
 	let logIndex = -1;
 	const enterCommand = () => {
 		logCommand(command);
@@ -15,9 +20,7 @@
 		if (command != '') {
 			print(controller(command.split(' ')));
 		}
-		print([
-			{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }
-		]);
+		print([{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }]);
 		command = '';
 	};
 </script>
@@ -42,11 +45,11 @@
 			<form class="w-full h-full p-0">
 				<textarea
 					bind:value={command}
+					bind:this={commandInput}
 					class="p-0 w-full h-full"
 					wrap="soft"
 					style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 					spellcheck="false"
-					autofocus
 					on:keydown={(e) => {
 						if (e.key == 'Enter') {
 							e.preventDefault();
@@ -70,10 +73,10 @@
 				/>
 			</form>
 		</div>
-		{#each $terminalLines as parts}
+		{#each $terminalLines as line}
 			<p class="whitespace-pre-wrap">
-				{#each parts as line}
-					<span style={line.style}>{line.text}</span>
+				{#each line as part}
+					<span style={part.style}>{part.text}</span>
 				{/each}
 			</p>
 		{/each}
