@@ -4,8 +4,8 @@
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
-    print([{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }]);
 	onMount(() => {
+		print([{ text: '\n' + $cwd.slice(5), style: 'font-weight: bold; color: cyan;' }]);
 		commandInput.focus();
 	});
 	let logIndex = -1;
@@ -21,7 +21,7 @@
 		if (command != '') {
 			print(controller(command.split(' ')));
 		}
-		print([{ text: '\n' + $cwd, style: 'font-weight: bold; color: cyan;' }]);
+		print([{ text: '\n' + ($cwd.length == 4 ? $cwd : $cwd.slice(5)), style: 'font-weight: bold; color: cyan;' }]);
 		command = '';
 	};
 </script>
