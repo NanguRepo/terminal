@@ -6,7 +6,7 @@ export type fileSystemFolder = {
 };
 
 export const log = writable(['']);
-export const terminalLines = writable([
+export const terminalLines: Writable<[[{text: string, style?: string}]]> = writable([
 	[
 		{
 			text: 'Terminal <c> NanguRepo 2023',

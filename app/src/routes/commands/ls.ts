@@ -1,19 +1,21 @@
 import { fileSystem, cwd } from '../components/stores';
 import type { fileSystemFolder } from '../components/stores';
+import type { terminalLine } from '../components/functions';
 import { isObject, resolvePath } from '../components/filesystem';
 import { get } from 'svelte/store';
 import { errorMessage } from '../components/functions';
 
-export default (input: string[]) => {
+export default (input: string[]): terminalLine => {
 	let directory = get(cwd);
 	if (input[0]) {
 		directory += `/${input[0]}`;
 	}
 	const response = ls(resolvePath(directory), get(fileSystem));
-	if (typeof response == 'string') {
-		return [{ text: response }]
+	if (response as terminalLine) {
+		return response as terminalLine;
 	} else {
-		return errorMessage(response[0], response[1])
+		const error = response as string[];
+		return errorMessage(error[0], error[1]);
 	}
 };
 
@@ -24,22 +26,29 @@ const ls = (currentDirectory: string, filesystem: fileSystemFolder) => {
 	// Traverse the filesystem based on the path in the currentDirectory
 	for (const element of pathElements) {
 		currentObject = currentObject[element];
-		if (!currentObject && currentObject !== "") {
+		if (!currentObject && currentObject !== '') {
 			return ['directory not found: ', element];
 		}
 	}
 
 	if (isObject(currentObject)) {
 		const contents = Object.keys(currentObject);
-		let returnMessage: string = '';
+		const files: terminalLine = [];
+		const folders: terminalLine = [];
 		for (const item of contents) {
 			if (isObject(currentObject[item])) {
-				returnMessage += item + '/\t';
+				folders.push({ text: item + '\t\t', style: 'font-weight: bold; color: #22AAFF;' });
 			} else {
-				returnMessage += item + '\t';
+				files.push({ text: item + '\t\t', style: '' });
 			}
 		}
-		return returnMessage;
+		folders.sort((a, b) => {
+			return a.text.localeCompare(b.text);
+		});
+		files.sort((a, b) => {
+			return a.text.localeCompare(b.text);
+		});
+		return [...folders, ...files];
 	} else {
 		return ['not a directory: ', currentDirectory];
 	}
