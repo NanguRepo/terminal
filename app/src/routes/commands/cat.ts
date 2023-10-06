@@ -16,3 +16,4 @@ export default (input: string[]) => {
     }
     return errorMessage("file not found: ", path)
 }
+export const description = "print the contents of a file."

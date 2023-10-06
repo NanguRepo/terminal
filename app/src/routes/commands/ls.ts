@@ -45,4 +45,4 @@ const ls = (currentDirectory: string, filesystem: fileSystemFolder) => {
 	}
 };
 
-export const description = 'get the contents of a directory, defaults to cwd.';
+export const description = 'list the contents of a directory, defaults to cwd.';

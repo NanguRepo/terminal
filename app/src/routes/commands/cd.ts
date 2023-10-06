@@ -14,3 +14,4 @@ export default (input: string[]) => {
     cwd.set(path)
     return [{text: '', style: 'display: none;'}];
 };
+export const description = "change current working directory."
