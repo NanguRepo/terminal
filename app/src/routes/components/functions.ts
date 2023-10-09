@@ -15,7 +15,7 @@ export const print = (input: terminalLine) => {
 };
 
 // use vite glob import to get every command within the folder
-export const modules = import.meta.glob('../commands/**/*.ts', { eager: true });
+export const modules = import.meta.glob('../commands/*.ts', { eager: true });
 export const controller = (input: string[]) => {
 	if (input[0] == '') {
 		return '';

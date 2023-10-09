@@ -14,14 +14,14 @@
 		logIndex = -1;
 		print([
 			{
-				text: $config.prompt == ' ' ? command : $config.prompt + ' ' + command,
+				text: $config.prompt == 'false' ? command : $config.prompt + ' ' + command,
 				style: ''
 			}
 		]);
 		if (command != '') {
 			print(controller(command.split(' ')));
 		}
-		print([{ text: '\n' + ($cwd.length == 4 ? $cwd : $cwd.slice(5)), style: 'font-weight: bold; color: cyan;' }]);
+		print([{ text: '\n' + ($cwd.length == 4 ? $cwd : $cwd.slice(5)), style: $config.cwdstyle }]);
 		command = '';
 	};
 </script>
@@ -40,7 +40,7 @@
 		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 	>
 		<div class="flex flex-row w-full h-full gap-[1ch] p-0">
-			{#if $config.prompt != ' '}
+			{#if $config.prompt != 'false'}
 				<span class="h-fit" style={$config.promptstyle}>{$config.prompt}</span>
 			{/if}
 			<form class="w-full h-full p-0">

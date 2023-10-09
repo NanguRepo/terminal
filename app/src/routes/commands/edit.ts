@@ -14,7 +14,7 @@ export default (input: string[]) => {
     if (promptResult == null) {
         content = ""
     } else {
-        content = promptResult
+        content = promptResult.replace(/\\n/g, '\n')
     }
     createFile(path, content)
     return [{text: `file created: ${input[0]}\nwith content: ${content}`, style: ''}];
