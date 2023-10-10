@@ -73,7 +73,11 @@ export const resolvePath = (targetPath: string) => {
 	// Process '..' in the target path
 	const resolvedPathElements = [];
 	for (const element of targetPathElements) {
-		if (element === '..') {
+		if (element === '~') {
+			// Handle '~' segment as root/~
+			resolvedPathElements.length = 0; // Clear existing elements
+			resolvedPathElements.push('root', '~');
+		} else if (element === '..') {
 			// Move up one level by removing the last element
 			if (resolvedPathElements.length > 1) {
 				resolvedPathElements.pop();

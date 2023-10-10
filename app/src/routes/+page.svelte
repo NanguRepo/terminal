@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { log, terminalLines, config, cwd } from './components/stores';
 	import { print, controller, logCommand } from './components/functions';
+	import { readFile } from './components/filesystem';
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
 	onMount(() => {
+		const autoexec = readFile('root/~/.autoexec');
+		if (autoexec) {
+			for (const line of autoexec.split('\n')) {
+				controller(line.split(' '));
+			}
+		}
 		print([{ text: '\n' + $cwd.slice(5), style: 'font-weight: bold; color: cyan;' }]);
 		commandInput.focus();
 	});

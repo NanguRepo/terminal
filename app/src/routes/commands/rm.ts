@@ -6,7 +6,8 @@ import { errorMessage } from "../components/functions";
 const important: string[] = [
     'root',
     'root/~',
-    'root/~/.aliases'
+    'root/~/.aliases',
+    'root/~/.autoexec'
 ]
 
 export default (input: string[], sudo: boolean = false) => {
@@ -23,3 +24,4 @@ export default (input: string[], sudo: boolean = false) => {
     }
     return errorMessage('file not found: ', input[0])
 }
+export const description = "delete a file."

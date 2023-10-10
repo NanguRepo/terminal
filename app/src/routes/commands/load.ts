@@ -1,5 +1,5 @@
 import { readFile } from '../components/filesystem';
-import { errorMessage } from '../components/functions';
+import { errorMessage, controller } from '../components/functions';
 import { cwd } from '../components/stores';
 import { get } from 'svelte/store';
 import config from './config';
@@ -15,9 +15,19 @@ export default (input: string[]) => {
 	if (lines === undefined) {
 		return errorMessage('unknown error');
 	}
-	for (const line of lines.split('\n')) {
-		config(line.split(' '));
+	const extension = input[0].split('/').slice(-1)[0].split('.').slice(-1)[0]
+	if (extension == 'conf') {
+		for (const line of lines.split('\n')) {
+			config(line.split(' '));
+		}
+		return [{ text: 'config loaded: ' + input[0].split('/').splice(-1)[0] }];
 	}
-	return [{ text: 'config loaded: ' + input[0].split('/').splice(-1)[0] }];
+	if (extension == 'script') {
+		const output = []
+		for (const line of lines.split('\n')) {
+			output.push(...controller(line.split(' ')), {text: '\n'});
+		}
+		return output;
+	}
 };
 export const description = "load a file"
