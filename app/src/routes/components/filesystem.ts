@@ -26,24 +26,33 @@ const traverse = (path: string) => {
 			return false; // Directory or file not found
 		}
 	}
-    return currentObject;
+	return currentObject;
 };
 
 export const fileExists = (path: string) => {
-    const currentObject = traverse(path)
+	const currentObject = traverse(path);
 	return currentObject !== undefined && currentObject !== false && !isObject(currentObject);
 };
 
-export const directoryExists = (path: string) => {
-    const currentObject = traverse(path)
-    return currentObject !== undefined && currentObject !== false
-}
-
-export const readFile = (filePath: string): string | null | undefined => {
-	if (!fileExists(filePath)) {
+export const deleteFile = (path: string) => {
+	const currentObject = traverse(path.split('/').slice(0, -1).join('/'));
+	if (!currentObject || !currentObject[path.split('/').slice(-1)[0]]) {
 		return null;
 	}
-	const pathElements = filePath.split('/').filter((element) => element !== ''); // Split and remove empty elements
+	delete currentObject[path.split('/').slice(-1)[0]];
+	return true;
+};
+
+export const directoryExists = (path: string) => {
+	const currentObject = traverse(path);
+	return currentObject !== undefined && currentObject !== false && isObject(currentObject);
+};
+
+export const readFile = (path: string): string | null | undefined => {
+	if (!fileExists(path)) {
+		return null;
+	}
+	const pathElements = path.split('/').filter((element) => element !== ''); // Split and remove empty elements
 	let currentObject = get(fileSystem);
 
 	for (const element of pathElements) {
@@ -75,7 +84,7 @@ export const resolvePath = (targetPath: string) => {
 		}
 	}
 	return resolvedPathElements.join('/');
-}
+};
 
 type fileSystemFolder = {
 	[Key: string]: string | fileSystemFolder | Record<PropertyKey, never>;
@@ -91,7 +100,7 @@ const createNestedObject = (
 		return { [file]: contents };
 	}
 	const folder = folders[depth - 1];
-    console.log({ [folder]: createNestedObject(depth - 1, file, contents, folders) });
+	console.log({ [folder]: createNestedObject(depth - 1, file, contents, folders) });
 	return { [folder]: createNestedObject(depth - 1, file, contents, folders) };
 };
 

@@ -28,6 +28,8 @@ export const config = writable(configDefaults);
 export const fileSystem: Writable<fileSystemFolder> = writable({
 	root: {
 		'~': {
+			'.aliases':
+				'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch',
 			configs: {
 				'commodore.conf':
 					'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE'

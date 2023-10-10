@@ -6,7 +6,7 @@ import config from './config';
 
 export default (input: string[]) => {
 	if (!input[0]) {
-		return errorMessage('no input: ', 'please specify a file path');
+		return errorMessage('no argument: ', 'pathname required');
 	}
 	const lines = readFile(get(cwd) + '/' + input[0]);
 	if (lines === null) {

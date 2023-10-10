@@ -5,7 +5,7 @@ import { get } from 'svelte/store';
 
 export default (input: string[]) => {
 	if (!input[0]) {
-		return errorMessage('no input: ', 'pathname required');
+		return errorMessage('no argument: ', 'pathname required');
 	}
     const path = resolvePath(get(cwd) + "/" + input[0])
     if (!directoryExists(path)) {

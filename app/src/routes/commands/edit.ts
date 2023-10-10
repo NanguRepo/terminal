@@ -1,8 +1,10 @@
 import { cwd } from "../components/stores";
 import { get } from "svelte/store";
 import { createFile, readFile } from "../components/filesystem";
+import { errorMessage } from "../components/functions";
 
 export default (input: string[]) => {
+    if (!input[0]) { return errorMessage('no argument: ', 'pathname required') }
     const path = get(cwd) + '/' + input[0];
     let content: string;
     let preexistingText: string = ""
