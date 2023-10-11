@@ -10,17 +10,15 @@ export default () => {
 		helpText.push({
 			text: '\n' + path.replace('../commands/', '').replace('.ts', ''),
 			style:
-				'font-weight: bold; font-style: italic; text-decoration-line: underline; text-decoration-thickness: 2px; text-underline-offset: 5px'
+				'font-weight: bold; font-style: italic'
 		});
 		helpText.push({
-			text: ' '.repeat(longest.length - path.length + 3),
-			style:
-				'text-decoration-line: underline; border-right-width: 1px; text-decoration-thickness: 2px; text-underline-offset: 5px'
+			text: ' '.repeat(longest.length - path.length + 3)
 		});
 		helpText.push({
-			text: ' ' + modules[path].description,
+			text: modules[path].description,
 			style:
-				'color: cyan; text-decoration-line: underline; text-decoration-thickness: 2px; text-underline-offset: 5px'
+				'color: cyan'
 		});
 	}
 	return helpText;
