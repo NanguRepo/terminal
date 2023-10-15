@@ -1,5 +1,7 @@
 import { modules } from '../components/functions';
 import type { terminalLine } from '../components/functions';
+import { config } from '../components/stores';
+import { get } from 'svelte/store';
 
 export default () => {
 	const helpText: terminalLine = [{ text: '', style: '' }];
@@ -18,7 +20,7 @@ export default () => {
 		helpText.push({
 			text: modules[path].description,
 			style:
-				'color: cyan'
+				'color: cyan;' + get(config).customcss
 		});
 	}
 	return helpText;

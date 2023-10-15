@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
@@ -19,14 +19,7 @@ export type fileSystemFolder = {
 };
 
 export const log = writable(['']);
-export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([
-	[
-		{
-			text: 'Terminal <c> NanguRepo 2023',
-			style: 'color: cyan'
-		}
-	]
-]);
+
 export const configDefaults: Record<string, string> = {
 	fontsize: '20px',
 	textcolor: '#FFFFFF',
@@ -38,6 +31,7 @@ export const configDefaults: Record<string, string> = {
 	cwdstyle: 'font-weight: bold; color: cyan;'
 };
 export const config = writable(configDefaults);
+export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([[{}]]);
 export const fileSystem: Writable<fileSystemFolder> = writable(
 	getFileSystem('filesystem', {
 		root: {

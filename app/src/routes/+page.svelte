@@ -13,7 +13,7 @@
 				controller(line.split(' '));
 			}
 		}
-		print([{ text: '\n' + $cwd.slice(5), style: 'font-weight: bold; color: cyan;' }]);
+		print([{text: 'terminal.svelte (c) nangurepo', style: 'color:cyan;' + $config.customcss}, { text: '\n' + $cwd.slice(5), style: $config.cwdstyle }]);
 		commandInput.focus();
 	});
 	let logIndex = -1;
