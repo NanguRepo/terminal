@@ -19,7 +19,7 @@ export type fileSystemFolder = {
 };
 
 export const log = writable(['']);
-export const terminalLines: Writable<[[{ text: string; style?: string }]]> = writable([
+export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([
 	[
 		{
 			text: 'Terminal <c> NanguRepo 2023',
@@ -57,6 +57,6 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 export const cwd = writable('root/~');
 export const overlayWindow = writable({
 	title: '',
-	content: ''
+	content: '',
+	target: ''
 })
-export const editorWindow: Writable<HTMLTextAreaElement> = writable()

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { log, terminalLines, config, cwd, overlayWindow, editorWindow } from './components/stores';
+	import { log, terminalLines, config, cwd, overlayWindow } from './components/stores';
 	import { print, controller, logCommand } from './components/functions';
 	import { readFile } from './components/filesystem';
+	import EditorUi from './components/editorUI.svelte';
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
-	let modifierKeyDown: boolean = false;
 	onMount(() => {
 		const autoexec = readFile('root/~/.autoexec');
 		if (autoexec) {
@@ -29,7 +29,7 @@
 		if (command != '') {
 			print(controller(command.split(' ')));
 		}
-		print([{ text: '\n' + ($cwd.length == 4 ? $cwd : $cwd.slice(5)), style: $config.cwdstyle }]);
+		print([{ text: $cwd.length == 4 ? $cwd : $cwd.slice(5), style: $config.cwdstyle }]);
 		command = '';
 	};
 </script>
@@ -48,30 +48,7 @@
 		style="font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 	>
 		{#if $overlayWindow.title == 'editor'}
-			<textarea
-				class="h-full w-full rounded-lg border border-neutral-700 p-2"
-				wrap="soft"
-				bind:this={$editorWindow}
-				bind:value={$overlayWindow.content}
-				style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
-				spellcheck="false"
-				on:keydown={(e) => {
-					if (e.key === 'Control') {
-						e.preventDefault();
-						modifierKeyDown = true;
-					}
-					if (e.key === 'x' && modifierKeyDown) {
-						e.preventDefault();
-						console.log('saved');
-					}
-				}}
-				on:keyup={(e) => {
-					if (e.key === 'Control') {
-						e.preventDefault();
-						modifierKeyDown = false;
-					}
-				}}
-			/>
+			<EditorUi />
 		{:else}
 			<div class="flex h-full w-full flex-row gap-[1ch] p-0">
 				{#if $config.prompt != 'false'}
@@ -109,11 +86,13 @@
 				</form>
 			</div>
 			{#each $terminalLines as line}
-				<p class="whitespace-pre-wrap">
-					{#each line as part}
-						<span style={part.style}>{part.text}</span>
-					{/each}
-				</p>
+				{#if !(line.length == 1 && line[0].text === undefined)}
+					<p class="whitespace-pre-wrap">
+						{#each line as part}
+							<span style={part.style}>{part.text}</span>
+						{/each}
+					</p>
+				{/if}
 			{/each}
 		{/if}
 	</div>
