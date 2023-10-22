@@ -38,7 +38,7 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 			'~': {
 				'.aliases':
 					'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch',
-				'.autoexec': 'load themes/default.conf',
+				'.bushrc': 'load themes/default.conf',
 				themes: {
 					'commodore.conf':
 						'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',

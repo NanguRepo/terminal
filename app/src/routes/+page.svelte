@@ -7,13 +7,16 @@
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
 	onMount(() => {
-		const autoexec = readFile('root/~/.autoexec');
-		if (autoexec) {
-			for (const line of autoexec.split('\n')) {
+		const bushrc = readFile('root/~/.bushrc');
+		if (bushrc) {
+			for (const line of bushrc.split('\n')) {
 				controller(line.split(' '));
 			}
 		}
-		print([{text: 'terminal.svelte (c) nangurepo', style: 'color:cyan;' + $config.customcss}, { text: '\n' + $cwd.slice(5), style: $config.cwdstyle }]);
+		print([
+			{ text: 'bush – basically useless shell', style: 'color:cyan;' + $config.customcss },
+			{ text: '\n' + $cwd.slice(5), style: $config.cwdstyle }
+		]);
 		commandInput.focus();
 	});
 	let logIndex = -1;
