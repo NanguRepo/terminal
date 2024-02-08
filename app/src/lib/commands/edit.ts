@@ -1,7 +1,8 @@
-import { cwd, overlayWindow } from '../components/stores';
+import { cwd, overlayWindow } from '$lib/stores';
 import { get } from 'svelte/store';
-import { createFile, readFile, resolvePath } from '../components/filesystem';
-import { errorMessage } from '../components/functions';
+import { createFile, readFile, resolvePath } from '$lib/filesystem';
+import { errorMessage } from '$lib/functions';
+import { nothing } from '$lib/constants';
 
 export default (input: string[]) => {
 	if (!input[0]) {
@@ -14,7 +15,7 @@ export default (input: string[]) => {
 		preexistingText = fileContent;
 	}
 	overlayWindow.set({ title: 'editor', content: preexistingText, target: path });
-	return [{}]
+	return nothing;
 };
 
 export const description = 'edit the contents of a file or create a new file with content.';

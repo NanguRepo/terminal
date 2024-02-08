@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { config, configDefaults } from '../components/stores';
+import { config, configDefaults } from '$lib/stores';
 
 const isErroneous = (input: string[]) => {
 	return (
@@ -25,19 +25,24 @@ const setAll = (value: string) => {
 
 export default (input: string[]) => {
 	if (isErroneous(input)) {
-		return [{text: 'Usage: config <option> <value>\n\n' + JSON.stringify(get(config), null, '\t') + '\n', style: ''}];
+		return [
+			{
+				text: 'Usage: config <option> <value>\n\n' + JSON.stringify(get(config), null, '\t') + '\n',
+				style: ''
+			}
+		];
 	}
 	if (!input[1]) {
-		return [{text: get(config)[input[0]], style: ''}];
+		return [{ text: get(config)[input[0]], style: '' }];
 	}
-    input[1] = input.slice(1).join(" ")
+	input[1] = input.slice(1).join(' ');
 	if (input[1] == 'reset') {
-		return [{text: reset(input), style: ''}];
+		return [{ text: reset(input), style: '' }];
 	}
 	if (input[0] == '*') {
-        return [{text: setAll(input[1]), style: ''}]
+		return [{ text: setAll(input[1]), style: '' }];
 	}
 	config.set({ ...get(config), [input[0]]: input[1] });
-	return [{text: `Set ${input[0]} to ${input[1]}`, style: ''}];
+	return [{ text: `Set ${input[0]} to ${input[1]}`, style: '' }];
 };
 export const description = 'configure the terminal.';

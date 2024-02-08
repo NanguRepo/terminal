@@ -1,26 +1,24 @@
 <script lang="ts">
-	import { log, terminalLines, config, cwd, overlayWindow } from './components/stores';
-	import { print, controller, logCommand } from './components/functions';
-	import { readFile } from './components/filesystem';
-	import EditorUi from './components/editorUI.svelte';
+	import { log, terminalLines, config, cwd, overlayWindow } from '$lib/stores';
+	import { print, controller, logCommand } from '$lib/functions';
+	import { readFile } from '$lib/filesystem';
+	import EditorUi from '$lib/components/editorUI.svelte';
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
-	onMount(() => {
+	onMount(async () => {
 		const bushrc = readFile('root/~/.bushrc');
 		if (bushrc) {
 			for (const line of bushrc.split('\n')) {
-				controller(line.split(' '));
+				const response = await controller(line.split(' '));
+				print(response);
 			}
 		}
-		print([
-			{ text: 'bush – basically useless shell', style: 'color:cyan;' + $config.customcss },
-			{ text: '\n' + $cwd.slice(5), style: $config.cwdstyle }
-		]);
+		print([{ text: $cwd.slice(5), style: $config.cwdstyle }]);
 		commandInput.focus();
 	});
 	let logIndex = -1;
-	const enterCommand = () => {
+	const enterCommand = async () => {
 		logCommand(command);
 		logIndex = -1;
 		print([
@@ -30,10 +28,11 @@
 			}
 		]);
 		if (command != '') {
-			print(controller(command.split(' ')));
+			const response = await controller(command.split(' '));
+			command = '';
+			print(response);
 		}
 		print([{ text: $cwd.length == 4 ? $cwd : $cwd.slice(5), style: $config.cwdstyle }]);
-		command = '';
 	};
 </script>
 

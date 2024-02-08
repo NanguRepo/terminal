@@ -21,14 +21,14 @@ export type fileSystemFolder = {
 export const log = writable(['']);
 
 export const configDefaults: Record<string, string> = {
-	fontsize: '20px',
-	textcolor: '#FFFFFF',
-	backgroundcolor: '#171717',
-	containercolor: '#000000',
+	fontsize: '',
+	textcolor: '',
+	backgroundcolor: '',
+	containercolor: '',
 	customcss: '',
-	prompt: '>',
-	promptstyle: 'font-weight: 900; text-decoration: underline;',
-	cwdstyle: 'font-weight: bold; color: cyan;'
+	prompt: '',
+	promptstyle: '',
+	cwdstyle: ''
 };
 export const config = writable(configDefaults);
 export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([[{}]]);
@@ -37,12 +37,16 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 		root: {
 			'~': {
 				'.aliases':
-					'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch',
-				'.bushrc': 'load themes/default.conf',
+					'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch\nrefresh=reload',
+				'.bushrc':
+					'echo bush – basically useless shell (CSS) color:cyan;\nsilent load themes/default.conf',
 				themes: {
 					'commodore.conf':
 						'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',
-					'default.conf': ''
+					'default.conf':
+						'fontsize 20px\ntextcolor #FFFFFF\nbackgroundcolor #171717\ncontainercolor #000000\nprompt $\ncwdstyle font-weight: bold; color: cyan;',
+					'light.conf':
+						'fontsize 20px\ntextcolor #000000\nbackgroundcolor #FFFFFF\ncontainercolor #FFFFFF\nprompt $\ncwdstyle font-weight: bold; color: red;'
 				}
 			}
 		}
@@ -53,4 +57,4 @@ export const overlayWindow = writable({
 	title: '',
 	content: '',
 	target: ''
-})
+});

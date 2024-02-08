@@ -1,4 +1,4 @@
-import { fileSystem, cwd } from './stores';
+import { fileSystem, cwd } from '$lib/stores';
 import { get } from 'svelte/store';
 
 export const createFile = (path: string, contents: string) => {
@@ -22,6 +22,7 @@ const traverse = (path: string) => {
 	// Traverse the filesystem based on the path in filePath
 	for (const element of pathElements) {
 		currentObject = currentObject[element];
+
 		if (!currentObject && currentObject !== '') {
 			return false; // Directory or file not found
 		}
@@ -104,7 +105,7 @@ const createNestedObject = (
 		return { [file]: contents };
 	}
 	const folder = folders[depth - 1];
-	console.log({ [folder]: createNestedObject(depth - 1, file, contents, folders) });
+	// console.log({ [folder]: createNestedObject(depth - 1, file, contents, folders) });
 	return { [folder]: createNestedObject(depth - 1, file, contents, folders) };
 };
 

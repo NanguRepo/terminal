@@ -1,9 +1,9 @@
-import { fileSystem, cwd } from '../components/stores';
-import type { fileSystemFolder } from '../components/stores';
-import type { terminalLine } from '../components/functions';
-import { isObject, resolvePath } from '../components/filesystem';
+import { fileSystem, cwd } from '$lib/stores';
+import type { fileSystemFolder } from '$lib/stores';
+import type { terminalLine } from '$lib/functions';
+import { isObject, resolvePath } from '$lib/filesystem';
 import { get } from 'svelte/store';
-import { errorMessage } from '../components/functions';
+import { errorMessage } from '$lib/functions';
 
 export default (input: string[]): terminalLine => {
 	let directory = get(cwd);
