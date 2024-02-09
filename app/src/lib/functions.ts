@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { terminalLines, log } from '$lib/stores';
+import { terminalLines, log, processing } from '$lib/stores';
 import { readFile } from '$lib/filesystem';
 import { nothing } from '$lib/constants';
 
@@ -44,7 +44,13 @@ export const controller = async (input: string[], sudo: boolean = false) => {
 	}
 	const commandName: string = getAlias(input[0].toLowerCase());
 	if (`/src/lib/commands/${commandName}.ts` in modules) {
-		return await modules[`/src/lib/commands/${commandName}.ts`]?.default(input.slice(1), sudo);
+		processing.set(true);
+		let response = await modules[`/src/lib/commands/${commandName}.ts`]?.default(
+			input.slice(1),
+			sudo
+		);
+		processing.set(false);
+		return response;
 	}
 	return errorMessage('command not found: ', input[0]);
 };
