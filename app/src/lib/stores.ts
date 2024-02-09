@@ -20,6 +20,8 @@ export type fileSystemFolder = {
 
 export const log = writable(['']);
 
+export const processing = writable(false);
+
 export const configDefaults: Record<string, string> = {
 	fontsize: '',
 	textcolor: '',
@@ -30,7 +32,7 @@ export const configDefaults: Record<string, string> = {
 	promptstyle: '',
 	cwdstyle: ''
 };
-export const config = writable(configDefaults);
+export const config: Writable<Record<string, string>> = writable(configDefaults);
 export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([[{}]]);
 export const fileSystem: Writable<fileSystemFolder> = writable(
 	getFileSystem('filesystem', {

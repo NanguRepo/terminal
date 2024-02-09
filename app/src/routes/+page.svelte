@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { log, terminalLines, config, cwd, overlayWindow } from '$lib/stores';
+	import { log, terminalLines, config, cwd, overlayWindow, processing } from '$lib/stores';
 	import { print, controller, logCommand } from '$lib/functions';
 	import { readFile } from '$lib/filesystem';
 	import EditorUi from '$lib/components/editorUI.svelte';
@@ -23,13 +23,13 @@
 		logIndex = -1;
 		print([
 			{
-				text: $config.prompt == 'false' ? command : $config.prompt + ' ' + command,
-				style: ''
+				text: $config.prompt == 'false' ? command : $config.prompt + ' ' + command
 			}
 		]);
 		if (command != '') {
-			const response = await controller(command.split(' '));
+			const splitCommand = command.split(' ');
 			command = '';
+			const response = await controller(splitCommand);
 			print(response);
 		}
 		print([{ text: $cwd.length == 4 ? $cwd : $cwd.slice(5), style: $config.cwdstyle }]);
@@ -53,7 +53,7 @@
 			<EditorUi />
 		{:else}
 			<div class="flex h-full w-full flex-row gap-[1ch] p-0">
-				{#if $config.prompt != 'false'}
+				{#if $config.prompt != 'false' && !$processing}
 					<span class="h-fit" style={$config.promptstyle}>{$config.prompt}</span>
 				{/if}
 				<form class="h-full w-full p-0">
