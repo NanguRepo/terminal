@@ -19,6 +19,11 @@
 	});
 	let logIndex = -1;
 	const enterCommand = async () => {
+		if ($processing) {
+			print([{ text: command }]);
+			command = '';
+			return;
+		}
 		logCommand(command);
 		logIndex = -1;
 		print([
