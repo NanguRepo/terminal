@@ -10,6 +10,7 @@ export const logCommand = (command: string) => {
 export type terminalLine = {
 	text?: string;
 	style?: string;
+	url?: string;
 }[];
 
 export const print = (input: terminalLine) => {

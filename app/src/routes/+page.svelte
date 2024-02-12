@@ -12,6 +12,7 @@
 	import { readFile } from '$lib/filesystem';
 	import EditorUi from '$lib/components/editorUI.svelte';
 	import { onMount } from 'svelte';
+	import Layout from './+layout.svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
 	let modifierKeyDown: boolean = false;
@@ -133,7 +134,14 @@
 				{#if !(line.length == 1 && line[0].text === undefined)}
 					<p class="whitespace-pre-wrap">
 						{#each line as part}
-							<span style={part.style}>{part.text}</span>
+							{#if part.url}
+								<a
+									href={part.url}
+									style={part.style}
+									class="text-blue-400 hover:text-blue-500 hover:underline">{part.text}</a
+								>
+							{:else}
+								<span style={part.style}>{part.text}</span>{/if}
 						{/each}
 					</p>
 				{/if}
