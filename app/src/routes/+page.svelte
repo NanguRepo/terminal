@@ -1,11 +1,20 @@
 <script lang="ts">
-	import { log, terminalLines, config, cwd, overlayWindow, processing } from '$lib/stores';
+	import {
+		log,
+		terminalLines,
+		config,
+		cwd,
+		overlayWindow,
+		processing,
+		interrupted
+	} from '$lib/stores';
 	import { print, controller, logCommand } from '$lib/functions';
 	import { readFile } from '$lib/filesystem';
 	import EditorUi from '$lib/components/editorUI.svelte';
 	import { onMount } from 'svelte';
 	let command: string = '';
 	let commandInput: HTMLTextAreaElement;
+	let modifierKeyDown: boolean = false;
 	onMount(async () => {
 		const bushrc = readFile('root/~/.bushrc');
 		if (bushrc) {
@@ -19,6 +28,11 @@
 	});
 	let logIndex = -1;
 	const enterCommand = async () => {
+		if ($processing) {
+			print([{ text: command }]);
+			command = '';
+			return;
+		}
 		logCommand(command);
 		logIndex = -1;
 		print([
@@ -64,7 +78,35 @@
 						wrap="soft"
 						style="outline: none; font-size: {$config.fontsize}; color: {$config.textcolor}; background-color: {$config.backgroundcolor}; {$config.customcss}"
 						spellcheck="false"
+						on:keyup={(e) => {
+							if (e.key === 'Control') {
+								e.preventDefault();
+								modifierKeyDown = false;
+							}
+						}}
 						on:keydown={(e) => {
+							if (e.key === 'Control') {
+								e.preventDefault();
+								modifierKeyDown = true;
+							}
+							if (e.key === 'c' && modifierKeyDown) {
+								if ($processing) {
+									$interrupted = true;
+									print([
+										{
+											text: command + '^C'
+										}
+									]);
+									command = '';
+								} else {
+									print([
+										{
+											text: $config.prompt == 'false' ? command : $config.prompt + ' ' + command
+										}
+									]);
+									command = '';
+								}
+							}
 							if (e.key == 'Enter') {
 								e.preventDefault();
 								enterCommand();

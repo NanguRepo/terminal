@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { errorMessage, print } from '$lib/functions';
+import { interrupted } from '$lib/stores';
 
 const isIP = (address: string) => {
 	return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
@@ -8,6 +9,13 @@ const isIP = (address: string) => {
 };
 
 export default async (input: string[]) => {
+	const controller = new AbortController();
+	interrupted.subscribe((value) => {
+		if (value) {
+			controller.abort();
+			interrupted.set(false);
+		}
+	});
 	if (!input[0]) {
 		return errorMessage('no argument: ', 'url required');
 	}
@@ -15,10 +23,11 @@ export default async (input: string[]) => {
 		input[0] = 'https://' + input[0];
 	}
 	print([{ text: `Fetching ${input[0]}...`, style: 'font-weight: 800;' }]);
+
 	try {
-		const response = await axios.get(input[0], { withCredentials: false });
+		const response = await axios.get(input[0], { signal: controller.signal });
 		return [{ text: JSON.stringify(response.data) }];
-	} catch (error) {
+	} catch (error: any) {
 		return errorMessage('failed to fetch: ', error.message);
 	}
 };

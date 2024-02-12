@@ -1,6 +1,7 @@
 import { writable, get } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import type { terminalLine } from './functions';
 
 const getFileSystem = (item: string, fallback: fileSystemFolder) => {
 	try {
@@ -21,6 +22,7 @@ export type fileSystemFolder = {
 export const log = writable(['']);
 
 export const processing = writable(false);
+export const interrupted = writable(false);
 
 export const configDefaults: Record<string, string> = {
 	fontsize: '',
@@ -33,7 +35,7 @@ export const configDefaults: Record<string, string> = {
 	cwdstyle: ''
 };
 export const config: Writable<Record<string, string>> = writable(configDefaults);
-export const terminalLines: Writable<[[{ text?: string; style?: string }]]> = writable([[{}]]);
+export const terminalLines: Writable<terminalLine[]> = writable([]);
 export const fileSystem: Writable<fileSystemFolder> = writable(
 	getFileSystem('filesystem', {
 		root: {

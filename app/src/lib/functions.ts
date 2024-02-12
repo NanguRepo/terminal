@@ -8,7 +8,7 @@ export const logCommand = (command: string) => {
 };
 
 export type terminalLine = {
-	text: string;
+	text?: string;
 	style?: string;
 }[];
 
@@ -32,6 +32,7 @@ function splitArrayByDelimiter(arr: string[], delimiter: string): string[][] {
 
 // use vite glob import to get every command within the folder
 export const modules = import.meta.glob('$lib/commands/*.ts', { eager: true });
+
 export const controller = async (input: string[], sudo: boolean = false) => {
 	if (input[0] == '') {
 		return nothing;
