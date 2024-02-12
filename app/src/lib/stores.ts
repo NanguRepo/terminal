@@ -23,6 +23,7 @@ export const log = writable(['']);
 
 export const processing = writable(false);
 export const interrupted = writable(false);
+export const replacePrevious = writable(false);
 
 export const configDefaults: Record<string, string> = {
 	fontsize: '',

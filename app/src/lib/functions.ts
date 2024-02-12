@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { terminalLines, log, processing } from '$lib/stores';
+import { terminalLines, log, processing, replacePrevious } from '$lib/stores';
 import { readFile } from '$lib/filesystem';
 import { nothing } from '$lib/constants';
 
@@ -10,9 +10,15 @@ export const logCommand = (command: string) => {
 export type terminalLine = {
 	text?: string;
 	style?: string;
+	url?: string;
 }[];
 
 export const print = (input: terminalLine) => {
+	if (get(replacePrevious)) {
+		const terminalLinesShifted = get(terminalLines).slice(1);
+		terminalLines.set(terminalLinesShifted);
+		replacePrevious.set(false);
+	}
 	terminalLines.set([input, ...get(terminalLines)]);
 };
 
