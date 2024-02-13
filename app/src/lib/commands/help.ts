@@ -10,7 +10,7 @@ export default () => {
 	});
 	for (const path in modules) {
 		helpText.push({
-			text: '\n' + path.replace('../commands/', '').replace('.ts', ''),
+			text: '\n' + path.replace('/src/lib/commands/', '').replace('.ts', ''),
 			style: 'font-weight: bold; font-style: italic'
 		});
 		helpText.push({
