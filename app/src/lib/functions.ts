@@ -39,15 +39,56 @@ function splitArrayByDelimiter(arr: string[], delimiter: string): string[][] {
 // use vite glob import to get every command within the folder
 export const modules = import.meta.glob('$lib/commands/*.ts', { eager: true });
 
-export const controller = async (input: string[], sudo: boolean = false) => {
-	if (input[0] == '') {
+const formatInput = (input: string): string[] => {
+	const tokens: string[] = [];
+	let currentToken = '';
+	let insideQuotes = false;
+
+	for (let i = 0; i < input.length; i++) {
+		const char = input[i];
+		if (char === ' ' && !insideQuotes) {
+			if (currentToken !== '') {
+				tokens.push(currentToken);
+				currentToken = '';
+			}
+		} else if (char === '"') {
+			insideQuotes = !insideQuotes;
+			// currentToken += char;
+		} else if (char === ';' && !insideQuotes) {
+			if (currentToken !== '') {
+				tokens.push(currentToken);
+				currentToken = '';
+			}
+			tokens.push(char);
+		} else {
+			currentToken += char;
+		}
+	}
+
+	if (currentToken !== '') {
+		tokens.push(currentToken);
+	}
+
+	return tokens;
+};
+
+const handlePipe = (input: string[]) => {
+	let currentOutput: string[];
+};
+
+export const controller = async (inputString: string, sudo: boolean = false) => {
+	if (inputString == '') {
 		return nothing;
 	}
-	if (input.includes('&')) {
-		for (let command of splitArrayByDelimiter(input, '&')) {
-			print(await controller(command));
+	const input = formatInput(inputString);
+	if (input.includes(';')) {
+		for (let command of splitArrayByDelimiter(input, ';')) {
+			print(await controller(command.join(' ')));
 		}
 		return nothing;
+	}
+	if (input.includes('|')) {
+		handlePipe(input);
 	}
 	const commandName: string = getAlias(input[0].toLowerCase());
 	if (`/src/lib/commands/${commandName}.ts` in modules) {

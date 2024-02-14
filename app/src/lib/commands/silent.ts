@@ -2,7 +2,7 @@ import { controller } from '$lib/functions';
 import { nothing } from '$lib/constants';
 
 export default (input: string[]) => {
-	controller(input);
+	controller(input.join(' '));
 	return nothing;
 };
 

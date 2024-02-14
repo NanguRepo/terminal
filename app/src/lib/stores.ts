@@ -24,6 +24,7 @@ export const log = writable(['']);
 export const processing = writable(false);
 export const interrupted = writable(false);
 export const replacePrevious = writable(false);
+export const printingBlocked = writable(false);
 
 export const configDefaults: Record<string, string> = {
 	fontsize: '',
@@ -44,7 +45,7 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 				'.aliases':
 					'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch\nrefresh=reload',
 				'.bushrc':
-					'echo bush – basically useless shell (CSS) color:cyan;\nsilent load themes/default.conf',
+					'echo "bush – basically useless shell" "color: cyan"\nsilent load themes/default.conf',
 				themes: {
 					'commodore.conf':
 						'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',

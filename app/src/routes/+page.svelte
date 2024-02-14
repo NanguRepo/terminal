@@ -20,7 +20,7 @@
 		const bushrc = readFile('root/~/.bushrc');
 		if (bushrc) {
 			for (const line of bushrc.split('\n')) {
-				const response = await controller(line.split(' '));
+				const response = await controller(line);
 				print(response);
 			}
 		}
@@ -42,9 +42,9 @@
 			}
 		]);
 		if (command != '') {
-			const splitCommand = command.split(' ');
+			const input = command;
 			command = '';
-			const response = await controller(splitCommand);
+			const response = await controller(input);
 			print(response);
 		}
 		print([{ text: $cwd.length == 4 ? $cwd : $cwd.slice(5), style: $config.cwdstyle }]);

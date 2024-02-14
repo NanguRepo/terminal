@@ -1,9 +1,12 @@
+import { errorMessage } from '$lib/functions';
+
 export default (input: string[]) => {
-    let style: string = ''
-    if (input.includes("(CSS)")) {
-        style = input.join(" ").split(" (CSS) ")[1]
-        input = input.join(" ").split(" (CSS) ")[0].split(" ")
-    }
-    return [{text: input.join(" "), style: style}];
-}
-export const description = "print a string to the terminal."
+	if (!input[0]) {
+		return errorMessage('no input: ', 'string required');
+	}
+	if (!input[1]) {
+		input[1] = '';
+	}
+	return [{ text: input[0], style: input[1] }];
+};
+export const description = 'print a string to the terminal.';
