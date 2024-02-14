@@ -72,11 +72,23 @@ const formatInput = (input: string): string[] => {
 	return tokens;
 };
 
-const handlePipe = (input: string[]) => {
-	let currentOutput: string[];
+const handlePipe = async (input: any[]) => {
+	let currentOutput: string = '';
+	let response: terminalLine = [];
+	for (const token of splitArrayByDelimiter(input, '|')) {
+		response = await executeCommand(token.concat(formatInput(currentOutput)), false);
+		currentOutput = '';
+		for (const part of response) {
+			currentOutput = currentOutput + part.text;
+		}
+	}
+	return response;
 };
 
-export const controller = async (inputString: string, sudo: boolean = false) => {
+export const controller = async (
+	inputString: string,
+	sudo: boolean = false
+): Promise<terminalLine> => {
 	if (inputString == '') {
 		return nothing;
 	}
@@ -88,8 +100,12 @@ export const controller = async (inputString: string, sudo: boolean = false) => 
 		return nothing;
 	}
 	if (input.includes('|')) {
-		handlePipe(input);
+		return handlePipe(input);
 	}
+	return await executeCommand(input, sudo);
+};
+
+const executeCommand = async (input: string[], sudo: boolean): Promise<terminalLine> => {
 	const commandName: string = getAlias(input[0].toLowerCase());
 	if (`/src/lib/commands/${commandName}.ts` in modules) {
 		processing.set(true);
