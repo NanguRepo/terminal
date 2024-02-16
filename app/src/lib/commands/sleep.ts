@@ -5,10 +5,10 @@ import { get } from 'svelte/store';
 
 export default async (input: string[]) => {
 	if (!input[0]) {
-		return errorMessage('no argument: ', 'please provide an amount of time in seconds');
+		return errorMessage('no argument', 'please provide an amount of time in seconds');
 	}
 	if (!Number(input[0])) {
-		return errorMessage('invalid argument: ', `${input[0]} is not a number`);
+		return errorMessage('invalid argument', `${input[0]} is not a number`);
 	}
 
 	let i = 0;

@@ -17,7 +17,7 @@ export default async (input: string[]) => {
 		}
 	});
 	if (!input[0]) {
-		return errorMessage('no argument: ', 'url required');
+		return errorMessage('no argument', 'url required');
 	}
 	if (!(input[0].startsWith('http://') || input[0].startsWith('https://') || isIP(input[0]))) {
 		input[0] = 'https://' + input[0];
@@ -28,7 +28,7 @@ export default async (input: string[]) => {
 		const response = await axios.get(input[0], { signal: controller.signal });
 		return [{ text: JSON.stringify(response.data) }];
 	} catch (error: any) {
-		return errorMessage('failed to fetch: ', error.message);
+		return errorMessage('failed to fetch', error.message);
 	}
 };
 

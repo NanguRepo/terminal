@@ -6,7 +6,7 @@ export default (input: string[], sudo: boolean = false) => {
 		return [{ text: 'filesystem reset' }];
 	}
 	return errorMessage(
-		'are you sure? ',
+		'sudo required',
 		're-run with sudo to confirm that you want to reset the entire file system permanently'
 	);
 };

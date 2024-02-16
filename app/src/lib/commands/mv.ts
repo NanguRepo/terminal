@@ -5,7 +5,7 @@ import { get } from 'svelte/store';
 
 export default (input: string[]) => {
 	if (input.length != 2) {
-		return errorMessage('insufficient arguments: ', 'correct usage is cp <from> <to>');
+		return errorMessage('insufficient arguments', 'correct usage is cp <from> <to>');
 	}
 	const toPath = get(cwd) + '/' + resolvePath(input[1]);
 	const fromPath = get(cwd) + '/' + resolvePath(input[0]);

@@ -4,13 +4,13 @@ import { cwd } from '$lib/stores';
 import { get } from 'svelte/store';
 import config from './config';
 
-export default (input: string[]) => {
+export default async (input: string[]) => {
 	if (!input[0]) {
-		return errorMessage('no argument: ', 'pathname required');
+		return errorMessage('no argument', 'pathname required');
 	}
 	const lines = readFile(get(cwd) + '/' + input[0]);
 	if (lines === null) {
-		return errorMessage('file not found: ', input[0]);
+		return errorMessage('file not found', input[0]);
 	}
 	if (lines === undefined) {
 		return errorMessage('unknown error');
@@ -25,7 +25,7 @@ export default (input: string[]) => {
 	if (extension == 'script') {
 		const output = [];
 		for (const line of lines.split('\n')) {
-			output.push(...controller(line.split(' ')), { text: '\n' });
+			output.push(...(await controller(line)), { text: '\n' });
 		}
 		return output;
 	}

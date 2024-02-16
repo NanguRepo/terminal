@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
-import { terminalLines, log, processing, replacePrevious } from '$lib/stores';
-import { readFile } from '$lib/filesystem';
+import { terminalLines, log, processing, replacePrevious, cwd } from '$lib/stores';
+import { readFile, createFile, directoryExists, resolvePath, fileExists } from '$lib/filesystem';
 import { nothing } from '$lib/constants';
 
 export const logCommand = (command: string) => {
@@ -15,8 +15,7 @@ export type terminalLine = {
 
 export const print = (input: terminalLine) => {
 	if (get(replacePrevious)) {
-		const terminalLinesShifted = get(terminalLines).slice(1);
-		terminalLines.set(terminalLinesShifted);
+		terminalLines.set(get(terminalLines).slice(1));
 		replacePrevious.set(false);
 	}
 	terminalLines.set([input, ...get(terminalLines)]);
@@ -72,7 +71,14 @@ const formatInput = (input: string): string[] => {
 	return tokens;
 };
 
-const handlePipe = async (input: any[]) => {
+const handleSemicolon = async (input: string[]) => {
+	for (let command of splitArrayByDelimiter(input, ';')) {
+		print(await handleSyntax(command, false));
+	}
+	return nothing;
+};
+
+const handlePipe = async (input: string[]) => {
 	let currentOutput: string = '';
 	let response: terminalLine = [];
 	for (const token of splitArrayByDelimiter(input, '|')) {
@@ -85,6 +91,65 @@ const handlePipe = async (input: any[]) => {
 	return response;
 };
 
+const handleRedirection = async (input: string[]) => {
+	let delimiter = '>';
+	if (input.includes('>>')) {
+		delimiter = '>>';
+	}
+	const tokens = splitArrayByDelimiter(input, delimiter);
+	if (tokens.length > 2) {
+		return errorMessage(
+			'invalid syntax',
+			'you cannot have more than one redirection in a statement'
+		);
+	}
+	const targetFile = resolvePath(get(cwd) + '/' + tokens[1][0]);
+	if (directoryExists(targetFile)) {
+		return errorMessage('invalid path', 'path points to a directory');
+	}
+	const response = await executeCommand(tokens[0], false);
+	let responseString: string = '';
+	for (const part of response) {
+		responseString = responseString + part.text;
+	}
+	if (delimiter === '>>') {
+		let fileContents = readFile(targetFile) || '';
+		responseString = fileContents + '\n' + responseString;
+	}
+	createFile(targetFile, responseString);
+	return nothing;
+};
+
+const handleInputRedirection = async (input: string[]) => {
+	const tokens = splitArrayByDelimiter(input, '<');
+	if (tokens.length > 2) {
+		return errorMessage(
+			'invalid syntax',
+			'you cannot have more than one redirection in a statement'
+		);
+	}
+	const fileContent = readFile(resolvePath(get(cwd) + '/' + input[1]));
+	if (fileContent === null) {
+		return errorMessage('invalid path', 'file not found');
+	}
+};
+
+const handleSyntax = async (input: string[], sudo: boolean) => {
+	if (input.includes(';')) {
+		return await handleSemicolon(input);
+	}
+	if (input.includes('|')) {
+		return await handlePipe(input);
+	}
+	if (input.includes('>') || input.includes('>>')) {
+		return await handleRedirection(input);
+	}
+	if (input.includes('<')) {
+		return await handleInputRedirection(input);
+	}
+	return await executeCommand(input, sudo);
+};
+
 export const controller = async (
 	inputString: string,
 	sudo: boolean = false
@@ -93,16 +158,7 @@ export const controller = async (
 		return nothing;
 	}
 	const input = formatInput(inputString);
-	if (input.includes(';')) {
-		for (let command of splitArrayByDelimiter(input, ';')) {
-			print(await controller(command.join(' ')));
-		}
-		return nothing;
-	}
-	if (input.includes('|')) {
-		return handlePipe(input);
-	}
-	return await executeCommand(input, sudo);
+	return await handleSyntax(input, sudo);
 };
 
 const executeCommand = async (input: string[], sudo: boolean): Promise<terminalLine> => {
@@ -116,7 +172,7 @@ const executeCommand = async (input: string[], sudo: boolean): Promise<terminalL
 		processing.set(false);
 		return response;
 	}
-	return errorMessage('command not found: ', input[0]);
+	return errorMessage('command not found', input[0]);
 };
 
 const getAlias = (input: string) => {
@@ -138,7 +194,7 @@ export const errorMessage = (message: string, detail?: string) => {
 			style: 'color: #FF6666; font-weight: bold'
 		},
 		{
-			text: message,
+			text: message + (detail ? ': ' : ''),
 			style: 'color: #FFAAAA;'
 		},
 		{

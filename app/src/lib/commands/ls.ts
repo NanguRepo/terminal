@@ -27,7 +27,7 @@ const ls = (currentDirectory: string, filesystem: fileSystemFolder) => {
 	for (const element of pathElements) {
 		currentObject = currentObject[element];
 		if (!currentObject && currentObject !== '') {
-			return errorMessage('directory not found: ', element);
+			return errorMessage('directory not found', element);
 		}
 	}
 
@@ -50,7 +50,7 @@ const ls = (currentDirectory: string, filesystem: fileSystemFolder) => {
 		});
 		return [...folders, ...files];
 	} else {
-		return errorMessage('not a directory: ', currentDirectory);
+		return errorMessage('not a directory', currentDirectory);
 	}
 };
 
