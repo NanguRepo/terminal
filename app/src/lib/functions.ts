@@ -82,7 +82,7 @@ const handlePipe = async (input: string[]) => {
 	let currentOutput: string = '';
 	let response: terminalLine = [];
 	for (const token of splitArrayByDelimiter(input, '|')) {
-		response = await executeCommand(token.concat(formatInput(currentOutput)), false);
+		response = await handleSyntax(token.concat(formatInput(currentOutput)), false);
 		currentOutput = '';
 		for (const part of response) {
 			currentOutput = currentOutput + part.text;
@@ -128,13 +128,14 @@ const handleInputRedirection = async (input: string[]) => {
 			'you cannot have more than one redirection in a statement'
 		);
 	}
-	const fileContent = readFile(resolvePath(get(cwd) + '/' + input[1]));
-	if (fileContent === null) {
+	const fileContent = readFile(resolvePath(get(cwd) + '/' + tokens[1]));
+	if (!fileContent) {
 		return errorMessage('invalid path', 'file not found');
 	}
+	return await handleSyntax([...tokens[0], fileContent], false);
 };
 
-const handleSyntax = async (input: string[], sudo: boolean) => {
+const handleSyntax = async (input: string[], sudo: boolean): Promise<terminalLine> => {
 	if (input.includes(';')) {
 		return await handleSemicolon(input);
 	}
