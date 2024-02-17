@@ -42,26 +42,18 @@ const formatInput = (input: string): string[] => {
 	const tokens: string[] = [];
 	let currentToken = '';
 	let insideQuotes = false;
-	let insideParentheses = false;
 
 	for (let i = 0; i < input.length; i++) {
 		const char = input[i];
-		if (char === ' ' && !insideQuotes && !insideParentheses) {
+		if (char === ' ' && !insideQuotes) {
 			if (currentToken !== '') {
 				tokens.push(currentToken);
 				currentToken = '';
 			}
 		} else if (char === '"') {
 			insideQuotes = !insideQuotes;
-		} else if (char === '(' && !insideQuotes) {
-			insideParentheses = true;
-			if (currentToken !== '') {
-				tokens.push(currentToken);
-				currentToken = '';
-			}
-			tokens.push(char);
-		} else if (char === ')' && !insideQuotes) {
-			insideParentheses = false;
+			// currentToken += char;
+		} else if (char === ';' && !insideQuotes) {
 			if (currentToken !== '') {
 				tokens.push(currentToken);
 				currentToken = '';
@@ -115,7 +107,7 @@ const handleRedirection = async (input: string[]) => {
 	if (directoryExists(targetFile)) {
 		return errorMessage('invalid path', 'path points to a directory');
 	}
-	const response = await executeCommand(tokens[0], false);
+	const response = await handleSyntax(tokens[0], false);
 	let responseString: string = '';
 	for (const part of response) {
 		responseString = responseString + part.text;
@@ -163,7 +155,7 @@ export const controller = async (
 	inputString: string,
 	sudo: boolean = false
 ): Promise<terminalLine> => {
-	if (inputString == '') {
+	if (!inputString) {
 		return nothing;
 	}
 	const input = formatInput(inputString);
