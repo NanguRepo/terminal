@@ -12,7 +12,7 @@ export default (input: string[], sudo: boolean = false) => {
 	const path = resolvePath(get(cwd) + '/' + input[0]);
 	if (important.includes(path) && !sudo) {
 		return errorMessage(
-			'protected file: ',
+			'protected file',
 			input[0] + '\nre-run this command with sudo to force deletion'
 		);
 	}
@@ -23,7 +23,7 @@ export default (input: string[], sudo: boolean = false) => {
 		);
 	}
 	if (deleteFile(path)) {
-		return [{ text: 'file deleted' + input[0] }];
+		return [{ text: 'file deleted: ' + input[0] }];
 	}
 	return errorMessage('file not found', input[0]);
 };
