@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { terminalLines, log, processing, replacePrevious, cwd } from '$lib/stores';
+import { terminalLines, log, processing, replacePrevious, cwd, printingBlocked } from '$lib/stores';
 import { readFile, createFile, directoryExists, resolvePath, fileExists } from '$lib/filesystem';
 import { nothing } from '$lib/constants';
 
@@ -14,6 +14,9 @@ export type terminalLine = {
 }[];
 
 export const print = (input: terminalLine) => {
+	if (get(printingBlocked)) {
+		return;
+	}
 	if (get(replacePrevious)) {
 		terminalLines.set(get(terminalLines).slice(1));
 		replacePrevious.set(false);
@@ -107,6 +110,7 @@ const handleRedirection = async (input: string[]) => {
 	if (directoryExists(targetFile)) {
 		return errorMessage('invalid path', 'path points to a directory');
 	}
+	printingBlocked.set(true);
 	const response = await handleSyntax(tokens[0], false);
 	let responseString: string = '';
 	for (const part of response) {
@@ -117,6 +121,7 @@ const handleRedirection = async (input: string[]) => {
 		responseString = fileContents + '\n' + responseString;
 	}
 	createFile(targetFile, responseString);
+	printingBlocked.set(false);
 	return nothing;
 };
 

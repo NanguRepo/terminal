@@ -64,3 +64,9 @@ export const overlayWindow = writable({
 	content: '',
 	target: ''
 });
+
+replacePrevious.subscribe((value) => {
+	if (value && get(printingBlocked)) {
+		replacePrevious.set(false);
+	}
+});
