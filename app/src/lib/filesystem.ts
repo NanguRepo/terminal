@@ -37,7 +37,7 @@ export const fileExists = (path: string) => {
 
 export const deleteFile = (path: string) => {
 	const currentObject = traverse(path.split('/').slice(0, -1).join('/'));
-	if (!currentObject || !currentObject[path.split('/').slice(-1)[0]]) {
+	if (!currentObject || currentObject[path.split('/').slice(-1)[0]] === undefined) {
 		return null;
 	}
 	delete currentObject[path.split('/').slice(-1)[0]];

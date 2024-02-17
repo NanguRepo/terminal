@@ -1,14 +1,17 @@
 import { cwd, overlayWindow } from '$lib/stores';
 import { get } from 'svelte/store';
-import { createFile, readFile, resolvePath } from '$lib/filesystem';
+import { createFile, readFile, resolvePath, directoryExists } from '$lib/filesystem';
 import { errorMessage } from '$lib/functions';
 import { nothing } from '$lib/constants';
 
 export default (input: string[]) => {
 	if (!input[0]) {
-		return errorMessage('no argument: ', 'pathname required');
+		return errorMessage('no argument', 'pathname required');
 	}
 	const path = resolvePath(get(cwd) + '/' + input[0]);
+	if (directoryExists(path)) {
+		return errorMessage('invalid path', 'path points to a directory');
+	}
 	let preexistingText: string = '';
 	const fileContent = readFile(path);
 	if (fileContent) {
