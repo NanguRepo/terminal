@@ -65,6 +65,14 @@ export const readFile = (path: string): string | null | undefined => {
 	}
 };
 
+export const listDirectory = (path: string): string[] | null => {
+	const currentObject = traverse(path);
+	if (!currentObject || !isObject(currentObject)) {
+		return null; // Directory does not exist or is not a directory
+	}
+	return Object.keys(currentObject);
+};
+
 export const resolvePath = (targetPath: string) => {
 	const currentPathElements = get(cwd)
 		.split('/')
