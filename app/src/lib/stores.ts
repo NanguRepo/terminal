@@ -30,7 +30,6 @@ export const configDefaults: Record<string, string> = {
 	fontsize: '',
 	textcolor: '',
 	backgroundcolor: '',
-	containercolor: '',
 	customcss: '',
 	prompt: '',
 	promptstyle: '',
@@ -48,11 +47,11 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 					'cd ~\necho "bush – basically useless shell" "color: cyan"\nsilent load themes/default.conf',
 				themes: {
 					'commodore.conf':
-						'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',
+						'backgroundcolor #483AAA\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',
 					'default.conf':
-						'fontsize 20px\ntextcolor #FFFFFF\nbackgroundcolor #171717\ncontainercolor #000000\nprompt $\ncwdstyle font-weight: bold; color: cyan;',
+						'fontsize 20px\ntextcolor #FFFFFF\nbackgroundcolor #171717\nprompt $\ncwdstyle font-weight: bold; color: cyan;',
 					'light.conf':
-						'fontsize 20px\ntextcolor #000000\nbackgroundcolor #FFFFFF\ncontainercolor #FFFFFF\nprompt $\ncwdstyle font-weight: bold; color: red;'
+						'fontsize 20px\ntextcolor #000000\nbackgroundcolor #FFFFFF\nprompt $\ncwdstyle font-weight: bold; color: red;'
 				}
 			}
 		}
