@@ -185,6 +185,7 @@
 					on:keydown={(e) => {
 						if (e.key !== 'Tab' && e.key !== 'Enter') {
 							tabItems = [];
+							tabIndex = -1;
 						}
 						if (e.key === 'Control') {
 							e.preventDefault();
