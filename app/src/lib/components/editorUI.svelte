@@ -10,7 +10,7 @@
 </script>
 
 <textarea
-	class="h-full w-full rounded-lg border border-neutral-700 p-2"
+	class="h-full w-full rounded-lg border border-neutral-700 bg-black p-2 text-white"
 	wrap="soft"
 	bind:value={$overlayWindow.content}
 	bind:this={editorElement}

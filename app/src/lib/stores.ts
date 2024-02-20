@@ -45,7 +45,7 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 				'.aliases':
 					'dir=ls\nvim=edit\nread=cat\ncls=clear\nconf=config\ndelete=rm\nplease=sudo\ncreate=touch\nrefresh=reload',
 				'.bushrc':
-					'echo "bush – basically useless shell" "color: cyan"\nsilent load themes/default.conf',
+					'cd ~\necho "bush – basically useless shell" "color: cyan"\nsilent load themes/default.conf',
 				themes: {
 					'commodore.conf':
 						'backgroundcolor #483AAA\ncontainercolor #867ADE\ntextcolor #867ADE\ncustomcss font-family: c64; text-transform: uppercase; border-radius: 0px;\nprompt false\ncwdstyle color: #867ADE',
@@ -58,7 +58,7 @@ export const fileSystem: Writable<fileSystemFolder> = writable(
 		}
 	})
 );
-export const cwd = writable('root/~');
+export const cwd = writable('root');
 export const overlayWindow = writable({
 	title: '',
 	content: '',
