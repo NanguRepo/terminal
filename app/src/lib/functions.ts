@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { terminalLines, log, processing, replacePrevious, cwd, printingBlocked } from '$lib/stores';
-import { readFile, createFile, directoryExists, resolvePath, fileExists } from '$lib/filesystem';
+import { readFile, createFile, directoryExists, resolvePath } from '$lib/filesystem';
 import { nothing } from '$lib/constants';
 
 export const logCommand = (command: string) => {
@@ -38,40 +38,136 @@ function splitArrayByDelimiter(arr: string[], delimiter: string): string[][] {
 	);
 }
 
+function splitArrayBetweenDelimiters(
+	arr: string[],
+	startDelimiter: string,
+	endDelimiter: string
+): [string[][], number[][]] {
+	const result: string[][] = [];
+	const indices: number[][] = [];
+	let currentSection: string[] = [];
+	let currentIndexPair: number[] = [];
+	let currentIndex: number = 0;
+	let sectionStarted = false;
+
+	for (const item of arr) {
+		if (item === startDelimiter && !sectionStarted) {
+			currentIndexPair.push(currentIndex);
+			sectionStarted = true; // Start a new section
+		} else if (item === endDelimiter && sectionStarted) {
+			if (currentSection.length > 0) {
+				result.push(currentSection); // Add the completed section to the result
+			}
+			currentSection = []; // Reset the current section for the next iteration
+			currentIndexPair.push(currentIndex);
+			indices.push(currentIndexPair);
+			currentIndexPair = [];
+			sectionStarted = false;
+		} else if (sectionStarted) {
+			currentSection.push(item); // Add items to the current section
+		}
+		currentIndex++;
+	}
+
+	return [result, indices];
+}
+
 // use vite glob import to get every command within the folder
 export const modules = import.meta.glob('$lib/commands/*.ts', { eager: true });
 
-const formatInput = (input: string): string[] => {
-	const tokens: string[] = [];
-	let currentToken = '';
-	let insideQuotes = false;
+// restructure the input string to an ordered array of token objects, each object having a type and some content
 
-	for (let i = 0; i < input.length; i++) {
-		const char = input[i];
-		if (char === ' ' && !insideQuotes) {
-			if (currentToken !== '') {
-				tokens.push(currentToken);
-				currentToken = '';
+// interface tokenType [string, object]
+
+interface commandToken {
+	type:
+		| 'semicolon'
+		| 'pipe'
+		| 'redirection'
+		| 'inputRedirection'
+		| 'subshell'
+		| 'command'
+		| 'file'
+		| undefined;
+	before?: commandToken;
+	after?: commandToken;
+	value?: string | string[];
+}
+
+const getDeepToken = (token: commandToken, depth: number) => {
+	let deepToken = token;
+	[...Array(depth)].map(() => (deepToken = deepToken.before || deepToken));
+	return deepToken;
+};
+
+const formatInput = (input: string): commandToken => {
+	let token: commandToken = { type: undefined };
+	let currentToken = '';
+	let previousChar = '';
+	let tokenStack: string[] = [];
+	let insideQuotes = false;
+	let escaped = false;
+	let testingInput = 'fetch < url\\ file.txt';
+	let inputCharacters = testingInput.split('').reverse();
+	let depth = 0;
+	for (const char of inputCharacters) {
+		let deepToken = getDeepToken(token, depth);
+		if (char === ';') {
+			deepToken.type = 'semicolon';
+			deepToken.after = { type: 'command', value: tokenStack };
+			deepToken.before = { type: undefined };
+			depth++;
+			tokenStack = [];
+		} else if (char === '|') {
+			deepToken.type = 'pipe';
+			deepToken.after = { type: 'command', value: tokenStack };
+			deepToken.before = { type: undefined };
+			depth++;
+			tokenStack = [];
+		} else if (char === '>') {
+			if (previousChar === '>') {
+				deepToken = getDeepToken(token, depth - 1);
+				deepToken.value = ['append'];
+			} else {
+				deepToken.value = ['write'];
 			}
+			deepToken.type = 'redirection';
+			deepToken.after = { type: 'file', value: tokenStack };
+			deepToken.before = { type: undefined };
+			depth++;
+			tokenStack = [];
+		} else if (char === '<') {
+			deepToken.type = 'inputRedirection';
+			deepToken.after = { type: 'file', value: tokenStack };
+			deepToken.before = { type: undefined };
+			depth++;
+			tokenStack = [];
+		} else if (char === ' ' && !insideQuotes && !escaped) {
+			if (currentToken !== '') {
+				tokenStack = [currentToken, ...tokenStack];
+			}
+			currentToken = '';
 		} else if (char === '"') {
 			insideQuotes = !insideQuotes;
-			// currentToken += char;
-		} else if (char === ';' && !insideQuotes) {
-			if (currentToken !== '') {
-				tokens.push(currentToken);
-				currentToken = '';
-			}
-			tokens.push(char);
-		} else {
-			currentToken += char;
+		} else if (char === '\\') {
+			escaped = true;
+		} else if (char) {
+			currentToken = char + currentToken;
 		}
+		previousChar = char;
+		console.log(currentToken);
 	}
 
-	if (currentToken !== '') {
-		tokens.push(currentToken);
+	if (tokenStack) {
+		if (currentToken) {
+			tokenStack = [currentToken, ...tokenStack];
+		}
+		let deepToken = getDeepToken(token, depth);
+		deepToken.type = 'command';
+		deepToken.value = tokenStack;
 	}
 
-	return tokens;
+	return token;
 };
 
 const handleSemicolon = async (input: string[]) => {
@@ -140,6 +236,24 @@ const handleInputRedirection = async (input: string[]) => {
 	return await handleSyntax([...tokens[0], fileContent], false);
 };
 
+const handleSubshellCommand = async (input: string[]) => {
+	const [commands, indices] = splitArrayBetweenDelimiters(input, '$', '$');
+	console.log(input, commands, indices);
+	const response = await handleSyntax(commands[0], false);
+	const firstHalf = input.slice(0, indices[0][0]);
+	let middle: string = '';
+	for (const part of response) {
+		middle = middle + (part.text || '');
+	}
+	if (input.slice(indices[0][1] + 1)[0] === '"') {
+	}
+	const secondHalf = [middle, ...input.slice(indices[0][1] + 1)];
+	console.log(firstHalf, secondHalf);
+	console.log(middle);
+
+	return handleSyntax(firstHalf.concat(secondHalf), false);
+};
+
 const handleSyntax = async (input: string[], sudo: boolean): Promise<terminalLine> => {
 	if (input.includes(';')) {
 		return await handleSemicolon(input);
@@ -153,6 +267,14 @@ const handleSyntax = async (input: string[], sudo: boolean): Promise<terminalLin
 	if (input.includes('<')) {
 		return await handleInputRedirection(input);
 	}
+	if (input.includes('$')) {
+		return await handleSubshellCommand(input);
+	}
+	for (const [index, token] of input.entries()) {
+		if (token.startsWith('"') && token.endsWith('"')) {
+			input[index] = token.substring(1, token.length - 1);
+		}
+	}
 	return await executeCommand(input, sudo);
 };
 
@@ -164,6 +286,7 @@ export const controller = async (
 		return nothing;
 	}
 	const input = formatInput(inputString);
+	console.log(input);
 	return await handleSyntax(input, sudo);
 };
 
